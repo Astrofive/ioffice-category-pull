@@ -8,18 +8,59 @@
 <body>
     <h1>Get iOffice Space Category</h1>
     <form id="loginForm" onsubmit="return false;">
-        <label for="username">Username:</label>
+        <label for="username">API Username:</label>
         <input type="text" id="username" name="username" required>
         <br>
-        <label for="password">Password:</label>
+
+        <label for="password">API Password:</label>
         <input type="password" id="password" name="password" required>
         <br>
+
+        <label for="spaceID">Space ID:</label>
+        <input type="text" id="spaceID" name="spaceID" required>
+        <br>
+
         <button type="button" id="submitButton">Submit</button>
     </form>
 
     <div id="generatedText">
-        <!-- Text will be generated here -->
+        <!-- Text will be placed here -->
     </div>
+
+    <script>
+        document.getElementById('submitButton').addEventListener('click', function() {
+            // Pull values from entered fields
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var spaceID = document.getElementById('spaceID').value;
+
+            // API Request
+            simulateApiRequest(username, password, spaceID);
+        });
+
+        async function simulateApiRequest(username, password, spaceID) {
+
+            // Note that the  selector=costCenters(costCenter(category))  endpoint is required in order to get the proper category info from the space.
+            const categoryResponse = await fetch(`https://test-hpe.iofficeconnect.com/external/api/rest/v2/rooms/${spaceID}?selector=costCenters(costCenter(category))`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-auth-username': `${username}`,
+                    'x-auth-password': `${password}`,
+                },
+            });
+            console.log(categoryResponse);
+            const categoryData = await categoryResponse.json();
+            console.log(categoryData);
+
+            // API returns several categories, so we find the one with ID 19. This could be different in the PROD ENV
+            const costCenterWithCategoryId = categoryData.costCenters.find(costCenter => costCenter.costCenter.category.id === 19);
+
+            // This will output the name of the cost center with category ID 19
+            console.log(costCenterWithCategoryId.costCenter.name); 
+
+        }
+    </script>
 
 </body>
 </html>
