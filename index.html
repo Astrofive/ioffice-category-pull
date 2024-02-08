@@ -6,6 +6,7 @@
     <title>iOffice Category Pull</title>
 </head>
 <body>
+    
     <h1>Get iOffice Space Category</h1>
     <form id="loginForm" onsubmit="return false;">
         <label for="username">API Username:</label>
@@ -26,6 +27,8 @@
     <div id="generatedText">
         <!-- Text will be placed here -->
     </div>
+
+
 
     <script>
         document.getElementById('submitButton').addEventListener('click', function() {
@@ -56,9 +59,12 @@
             // API returns several categories, so we find the one with ID 19. This could be different in the PROD ENV
             const costCenterWithCategoryId = categoryData.costCenters.find(costCenter => costCenter.costCenter.category.id === 19);
 
-            // This will output the name of the cost center with category ID 19
-            console.log(costCenterWithCategoryId.costCenter.name); 
+            // Get the name (Reservable WS, Non-Reservable, etc.) from that item
+            const reservableValue = costCenterWithCategoryId.costCenter.name;
 
+            // This will output the name of the cost center with category ID 19
+            console.log(reservableValue); 
+            document.getElementById('generatedText').innerText = reservableValue;
         }
     </script>
 
